@@ -101,7 +101,7 @@ You can either load Common Voice via the Mozilla Data Collective Python SDK dire
 
 1. Ensure `.env` exists and contains a valid `MDC_API_KEY` under the `src/speech_to_text_finetune` directory (see Setup above).
 2. Identify the MDC dataset id for your language (Scripted or Spontaneous Common Voice) from the Mozilla Data Collective portal.
-    - You can find the `id` by looking at the URL of the dataset's page on MDC platform. The ID is located at the very end of the URL, after the `/datasets/` path. For example, for URL `https://datacollective.mozillafoundation.org/datasets/cmflnuzw6lrt9e6ui4kwcshvn` dataset id will be `cmflnuzw6lrt9e6ui4kwcshvn`.
+    - You can find the `id` by looking at the URL of the dataset's page on MDC platform. The ID is located at the very end of the URL, after the `/datasets/` path. For example, for URL `https://datacollective.mozillafoundation.org/datasets/cminc35no007no707hql26lzk` dataset id will be `cminc35no007no707hql26lzk`.
 3. Set `dataset_id` in `config_<model>.yaml` to the MDC dataset id. Example:
    ```
    model_id: openai/whisper-tiny
