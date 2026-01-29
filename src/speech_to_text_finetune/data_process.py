@@ -5,7 +5,7 @@ from typing import Dict, List, Tuple, Union
 
 import pandas as pd
 import torch
-from datacollective import load_mdc_dataset, get_dataset_details
+from datacollective import load_dataset as load_mdc_dataset, get_dataset_details
 from datasets import Audio, Dataset, DatasetDict, load_dataset, load_from_disk
 from dotenv import load_dotenv
 from loguru import logger
