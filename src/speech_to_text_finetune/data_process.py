@@ -5,7 +5,7 @@ from typing import Dict, List, Tuple, Union
 
 import pandas as pd
 import torch
-from datacollective import DataCollective
+from datacollective import load_dataset
 from datasets import Audio, Dataset, DatasetDict, load_dataset, load_from_disk
 from dotenv import load_dotenv
 from loguru import logger
@@ -151,8 +151,7 @@ def _load_mdc_common_voice(dataset_id: str) -> DatasetDict:
             "MDC_API_KEY environment variable not set. "
             "Please set it to access Mozilla Data Collective datasets."
         )
-    mdc_client = DataCollective()
-    dataset = mdc_client.load_dataset(dataset_id)
+    dataset = load_dataset(dataset_id)
     dataset_df = dataset.to_pandas()
     dataset_details = mdc_client.get_dataset_details(dataset_id)
     data_dir = Path(dataset.corpus_filepath)
