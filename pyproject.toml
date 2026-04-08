@@ -23,10 +23,6 @@ dependencies = [
   "transformers>=4.57.1",
 ]
 
-
-[tool.uv.sources]
-datacollective = { git = "https://github.com/Mozilla-Data-Collective/datacollective-python", rev = "b32863735185e56fa6e121e1f99b8de7cfede3ee" }
-
 [dependency-groups]
 demo = [
   "python-dotenv",
