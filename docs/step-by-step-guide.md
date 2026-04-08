@@ -60,6 +60,8 @@ Initially, you can test the quality of the Speech-to-Text models available in Hu
    dataset_id: example_data/custom
    language: English  # Set to None for multilingual training or if your language is not supported by Whisper
    repo_name: default
+   download_directory: ""  # Ignored for local datasets
+   test_size: null  # Ignored here because example_data/custom already provides train/test
 
    training_hp:
      push_to_hub: False
@@ -83,19 +85,22 @@ Pick one of the following:
 - Option A: Mozilla Data Collective Python SDK
   1. Ensure `.env` contains a valid `MDC_API_KEY`  under the `src/speech_to_text_finetune` directory.
   2. Find the MDC dataset id for your language (Scripted or Spontaneous).
-  3. Configure `config.yaml` with the MDC dataset id:
+  3. If you want an interactive notebook walkthrough for an MDC dataset, open `demo/mdc_khmer.ipynb` and run the cells in order.
+  4. Configure `config.yaml` with the MDC dataset id:
      ```bash
      model_id: openai/whisper-tiny
      dataset_id: <mdc_dataset_id>
      language: English
      repo_name: default
+     download_directory: /path/to/mdc-downloads  # Optional
+     test_size: null  # Ignored when the MDC dataset already provides train/test
 
      training_hp:
        push_to_hub: False
        hub_private_repo: True
        ...
      ```
-  4. Finetune:
+  5. Finetune:
      ```bash
      python src/speech_to_text_finetune/finetune_whisper.py
      ```
@@ -108,6 +113,8 @@ Pick one of the following:
      dataset_id: path/to/common_voice_data/language_id
      language: English
      repo_name: default
+     download_directory: ""  # Ignored for local datasets
+     test_size: null  # Ignored because Common Voice already provides splits
 
      training_hp:
        push_to_hub: False

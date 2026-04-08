@@ -93,6 +93,8 @@ The same instructions apply for the GitHub Codespaces option.
 3. Finetune: `python src/speech_to_text_finetune/finetune_whisper.py`
 4. Test the finetuned model: `python demo/transcribe_app.py`
 
+For tabular ASR datasets (`.csv`, `.tsv`, `.parquet`) with `audio_path` and `transcription` columns, `test_size` is only used when the loader needs to create a train/test split. If your dataset already defines both train and test rows, that split is preserved and `test_size` is ignored. If the split metadata is missing or incomplete, the loader creates a fresh split over all rows. See `docs/customization.md` for the full split-handling rules.
+
 ### Making your own STT model using Common Voice
 
 You can either load Common Voice via the Mozilla Data Collective Python SDK directly or use a locally downloaded copy.
@@ -108,6 +110,7 @@ You can either load Common Voice via the Mozilla Data Collective Python SDK dire
    dataset_id: <mdc_dataset_id>
    language: English
    repo_name: default
+   download_directory: /path/to/mdc-downloads  # Optional
 
    training_hp:
      push_to_hub: False
@@ -116,8 +119,17 @@ You can either load Common Voice via the Mozilla Data Collective Python SDK dire
    ```
 4. Finetune: `python src/speech_to_text_finetune/finetune_whisper.py`
 
+   If `download_directory` is omitted or left as `""`, the MDC SDK keeps using its existing default behavior.
+   If the MDC dataset already defines both train and test splits, `test_size` is ignored.
+
 > [!NOTE]
 > To enable downloads via Python API, you must accept the terms and conditions of the dataset you will be using on the MDC platform.
+
+##### MDC notebook example
+
+For a notebook-based walkthrough of the full MDC flow - GPU check, API key entry, dataframe preview, Whisper-ready normalization, config generation, and the final `run_finetuning(config_path="config.yaml")` step - open:
+
+`demo/mdc_khmer.ipynb`
 
 #### Option B: Use a locally downloaded Common Voice dataset
 
@@ -129,6 +141,7 @@ You can either load Common Voice via the Mozilla Data Collective Python SDK dire
    dataset_id: path/to/common_voice_data/language_id
    language: English
    repo_name: default
+   download_directory: ""  # Ignored for local datasets
 
    training_hp:
      push_to_hub: False
@@ -136,6 +149,8 @@ You can either load Common Voice via the Mozilla Data Collective Python SDK dire
      ...
    ```
 4. Finetune: `python src/speech_to_text_finetune/finetune_whisper.py`
+
+   Common Voice already provides official splits, so `test_size` is ignored here.
 
 > [!TIP]
 > Run `python demo/model_comparison_app.py` to easily compare the performance of two models side by side ([example](images/model_comparison_example.png)).
