@@ -19,7 +19,7 @@
       
       
       <link rel="icon" href="../images/Blueprint-logo-black-flavicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
     
     
       
@@ -27,7 +27,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.618322db.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -420,10 +420,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#step-2-create-a-load_my_dataset-function" class="md-nav__link">
+  <a href="#step-2-use-the-built-in-tabular-asr-dataset-loader" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Step 2: Create a load_my_dataset Function
+        Step 2: Use the built-in tabular ASR dataset loader
       
     </span>
   </a>
@@ -431,10 +431,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#step-3-integrate-with-the-rest-of-the-codebase" class="md-nav__link">
+  <a href="#how-test_size-is-applied" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Step 3: Integrate with the rest of the codebase
+        How test_size is applied
       
     </span>
   </a>
@@ -442,10 +442,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#step-4-update-your-config-file" class="md-nav__link">
+  <a href="#step-3-update-your-config-file" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Step 4: Update your config file
+        Step 3: Update your config file
       
     </span>
   </a>
@@ -453,10 +453,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#step-5-fine-tune-the-model-with-your-own-dataset" class="md-nav__link">
+  <a href="#step-4-fine-tune-the-model-with-your-own-dataset" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Step 5: Fine-Tune the model with your own dataset!
+        Step 4: Fine-Tune the model with your own dataset!
       
     </span>
   </a>
@@ -591,10 +591,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#step-2-create-a-load_my_dataset-function" class="md-nav__link">
+  <a href="#step-2-use-the-built-in-tabular-asr-dataset-loader" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Step 2: Create a load_my_dataset Function
+        Step 2: Use the built-in tabular ASR dataset loader
       
     </span>
   </a>
@@ -602,10 +602,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#step-3-integrate-with-the-rest-of-the-codebase" class="md-nav__link">
+  <a href="#how-test_size-is-applied" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Step 3: Integrate with the rest of the codebase
+        How test_size is applied
       
     </span>
   </a>
@@ -613,10 +613,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#step-4-update-your-config-file" class="md-nav__link">
+  <a href="#step-3-update-your-config-file" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Step 4: Update your config file
+        Step 3: Update your config file
       
     </span>
   </a>
@@ -624,10 +624,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#step-5-fine-tune-the-model-with-your-own-dataset" class="md-nav__link">
+  <a href="#step-4-fine-tune-the-model-with-your-own-dataset" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Step 5: Fine-Tune the model with your own dataset!
+        Step 4: Fine-Tune the model with your own dataset!
       
     </span>
   </a>
@@ -701,13 +701,20 @@ Does this Blueprint have anything to offer me?</p>
 </span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="p">}</span>
 </span></code></pre></div>
 <p>Notably, there should be a pair of transcribed text and an audio clip (usually in the form of a path to the audio file, either <code>.mp3</code> or <code>.wav</code>)</p>
-<h3 id="step-2-create-a-load_my_dataset-function">Step 2: Create a <em>load_my_dataset</em> Function</h3>
-<p>Next, you'll create a custom dataset loading function and place it inside <code>data_process.py</code>. This function will load and pre-process your dataset into the expected format and return an HuggingFace <code>DatasetDict</code> containing two <code>Dataset</code> objects like so: <code>train</code>:<code>Dataset</code> and <code>test</code>:<code>Dataset</code> for each split respectively.</p>
+<h3 id="step-2-use-the-built-in-tabular-asr-dataset-loader">Step 2: Use the built-in tabular ASR dataset loader</h3>
+<p>If your dataset is a local <code>.csv</code>, <code>.tsv</code>, or <code>.parquet</code> file (or a directory containing one) with the columns <code>audio_path</code> and <code>transcription</code>, you do <strong>not</strong> need to write a custom loader anymore. The built-in loader in <code>data_process.py</code> will:</p>
+<ul>
+<li>keep only the audio path and transcription columns</li>
+<li>ignore extra metadata columns such as <code>topic</code>, <code>speaker_id</code>, or <code>paragraph_id</code></li>
+<li>expect <code>audio_path</code> to already contain an absolute path to the audio file</li>
+<li>preserve a <code>split</code> column if it already defines both train and test data</li>
+<li>otherwise create a fresh train/test split using <code>sklearn.model_selection.train_test_split</code></li>
+</ul>
 <p>As an example, lets consider that you have a directory with a csv file and all the audio clips like this:</p>
 <p><div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>datasets/
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>├── my_dataset/
 </span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>│   ├── dataset.csv
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>│   └── audio_files/
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>│   └── clips/
 </span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>│       ├── audio_1.wav
 </span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>│       ├── audio_2.wav
 </span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>│       ├── audio_3.wav
@@ -715,69 +722,42 @@ Does this Blueprint have anything to offer me?</p>
 </span></code></pre></div>
 and that the .csv file has the following format:</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>csv my_dataset/dataset.csv
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>audio,text
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>example_1.mp3,&quot;This is an example&quot;
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>example_2.mp3,&quot;This is another example&quot;
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>audio_path,transcription,topic,speaker_id
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>/home/user/datasets/my_dataset/clips/example_1.mp3,&quot;This is an example&quot;,culture,speaker_1
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>/home/user/datasets/my_dataset/clips/example_2.mp3,&quot;This is another example&quot;,culture,speaker_2
 </span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>...
-</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>example_n.mp3,&quot;This is yet another example&quot;
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>/home/user/datasets/my_dataset/clips/example_n.mp3,&quot;This is yet another example&quot;,culture,speaker_n
 </span></code></pre></div>
-<p><strong>Example function</strong>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>import os
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>import pandas as pd
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>from datasets import Dataset, DatasetDict
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>from sklearn.model_selection import train_test_split
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>
-</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>
-</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>def load_my_dataset(my_dataset_dir: str = &quot;/home/user/datasets/my_dataset&quot;, train_split: float = 0.8) -&gt; DatasetDict:
-</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>    &quot;&quot;&quot;
-</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>    Load and process your custom dataset from the given directory.
-</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>
-</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>    Args:
-</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>        my_dataset_dir (str): Path to the directory containing your dataset.
-</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>        train_split (float): Percentage of data to use for training. The rest will be used for evaluation as a test set.
-</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>
-</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>    Returns:
-</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>        DatasetDict: HF Dataset dictionary that consists of two distinct Datasets (train and test)
-</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a>    &quot;&quot;&quot;
-</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a>    # Define the path to the CSV file
-</span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a>    csv_path = os.path.join(my_dataset_dir, &quot;dataset.csv&quot;)
-</span><span id="__span-3-20"><a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a>    df = pd.read_csv(csv_path)
-</span><span id="__span-3-21"><a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a>
-</span><span id="__span-3-22"><a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a>    # Only keep the columns we need and drop any other possible metadata columns
-</span><span id="__span-3-23"><a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a>    df = df.select_columns([&quot;audio&quot;, &quot;sentence&quot;])
-</span><span id="__span-3-24"><a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a>
-</span><span id="__span-3-25"><a id="__codelineno-3-25" name="__codelineno-3-25" href="#__codelineno-3-25"></a>    # Our processing script expects the column with the transcribed text to be called &quot;sentence&quot;
-</span><span id="__span-3-26"><a id="__codelineno-3-26" name="__codelineno-3-26" href="#__codelineno-3-26"></a>    df = df.rename(columns={&quot;text&quot;: &quot;sentence&quot;})
-</span><span id="__span-3-27"><a id="__codelineno-3-27" name="__codelineno-3-27" href="#__codelineno-3-27"></a>
-</span><span id="__span-3-28"><a id="__codelineno-3-28" name="__codelineno-3-28" href="#__codelineno-3-28"></a>    # Replace the relative path to the audio clip with the absolute path
-</span><span id="__span-3-29"><a id="__codelineno-3-29" name="__codelineno-3-29" href="#__codelineno-3-29"></a>    df[&quot;audio&quot;] = df[&quot;audio&quot;].apply(lambda p: f&quot;{my_dataset_dir}/audio_files/{p}&quot;)
-</span><span id="__span-3-30"><a id="__codelineno-3-30" name="__codelineno-3-30" href="#__codelineno-3-30"></a>
-</span><span id="__span-3-31"><a id="__codelineno-3-31" name="__codelineno-3-31" href="#__codelineno-3-31"></a>    # Split the DataFrame into train and test sets and set a seed to shuffle and easily reproduce
-</span><span id="__span-3-32"><a id="__codelineno-3-32" name="__codelineno-3-32" href="#__codelineno-3-32"></a>    train_df, test_df = train_test_split(df, train_size=train_split, random_state=42)
-</span><span id="__span-3-33"><a id="__codelineno-3-33" name="__codelineno-3-33" href="#__codelineno-3-33"></a>
-</span><span id="__span-3-34"><a id="__codelineno-3-34" name="__codelineno-3-34" href="#__codelineno-3-34"></a>    # Return the DatasetDict containing the train and test datasets
-</span><span id="__span-3-35"><a id="__codelineno-3-35" name="__codelineno-3-35" href="#__codelineno-3-35"></a>    return DatasetDict({
-</span><span id="__span-3-36"><a id="__codelineno-3-36" name="__codelineno-3-36" href="#__codelineno-3-36"></a>        &quot;train&quot;: Dataset.from_pandas(train_df),
-</span><span id="__span-3-37"><a id="__codelineno-3-37" name="__codelineno-3-37" href="#__codelineno-3-37"></a>        &quot;test&quot;: Dataset.from_pandas(test_df)
-</span><span id="__span-3-38"><a id="__codelineno-3-38" name="__codelineno-3-38" href="#__codelineno-3-38"></a>    })
-</span></code></pre></div></p>
-<h3 id="step-3-integrate-with-the-rest-of-the-codebase">Step 3: Integrate with the rest of the codebase</h3>
-<p>Once you've created your custom dataset loading function, you need to integrate it into the existing codebase. Specifically, you need to update the <code>load_dataset_from_dataset_id</code> function in <code>data_process.py</code> to include the new function. Simply add to the function:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>    try:
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>        dataset = load_my_dataset(dataset_id)
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>        return dataset, _get_local_proc_dataset_path(dataset_id)
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>    except FileNotFoundError:
-</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>        pass
+<p>Optionally, you can also provide a <code>split</code> column with values like <code>train</code>, <code>dev</code>, <code>val</code>, <code>valid</code>, <code>validation</code>, <code>test</code>, <code>eval</code>, or <code>evaluation</code>.</p>
+<h3 id="how-test_size-is-applied">How <code>test_size</code> is applied</h3>
+<ul>
+<li>If your dataset already defines both train and test rows, that split is preserved and <code>test_size</code> is ignored.</li>
+<li><code>dev</code>, <code>val</code>, <code>valid</code>, and <code>validation</code> are treated as training data.</li>
+<li><code>test</code>, <code>eval</code>, and <code>evaluation</code> are treated as test data.</li>
+<li>If the <code>split</code> column is missing, empty, or only defines one side of the split, the loader creates a fresh train/test split over the full dataset.</li>
+<li>In that case, <code>test_size</code> is passed directly to <code>sklearn.model_selection.train_test_split</code>.</li>
+<li>If <code>test_size</code> is <code>null</code>, scikit-learn's default split size is used.</li>
+<li>For datasets that already come with fixed splits, such as Common Voice or the legacy <code>train/</code> + <code>test/</code> custom dataset layout, the existing split is preserved and <code>test_size</code> is ignored.</li>
+</ul>
+<h3 id="step-3-update-your-config-file">Step 3: Update your config file</h3>
+<p>Point <code>dataset_id</code> to either the dataset directory or directly to the dataset file. <code>test_size</code> is only used when the loader needs to create a train/test split. If your dataset already defines both train and test rows, that split is preserved and <code>test_size</code> is ignored. If your dataset does not define a complete split, a fresh split is created from all rows using <code>test_size</code> or, when <code>test_size: null</code>, scikit-learn's default behavior. If you are using an MDC dataset id instead of a local path, you can also set <code>download_directory</code> to choose where the raw dataset should be downloaded.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>model_id: openai/whisper-tiny
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>dataset_id: /home/user/datasets/my_dataset
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>language: English
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>repo_name: default
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>download_directory: &quot;&quot;  # Only used for MDC dataset ids
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>n_train_samples: -1
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>n_test_samples: -1
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>test_size: 0.2  # Only used when the loader needs to create a test split
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>training_hp:
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>  push_to_hub: False
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>  hub_private_repo: True
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>  ...
 </span></code></pre></div>
-<h3 id="step-4-update-your-config-file">Step 4: Update your config file</h3>
-<p>Don't forget to update your config file so that the <code>dataset_id</code> points to the right directory path:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>model_id: openai/whisper-tiny
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>dataset_id: /home/user/datasets/my_dataset
-</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>...
-</span></code></pre></div>
-<h3 id="step-5-fine-tune-the-model-with-your-own-dataset">Step 5: Fine-Tune the model with your own dataset!</h3>
+<h3 id="step-4-fine-tune-the-model-with-your-own-dataset">Step 4: Fine-Tune the model with your own dataset!</h3>
 <p>Finally, simply run the finetune_whisper.py script to fine-tune the Whisper model using your custom dataset.</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>python src/speech_to_text_finetune/finetune_whisper.py
+<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>python src/speech_to_text_finetune/finetune_whisper.py
 </span></code></pre></div>
 <h2 id="contributing-to-the-blueprint">🤝 <strong>Contributing to the Blueprint</strong></h2>
 <p>Want to help improve or extend this Blueprint? Check out the <strong><a href="../future-features-contributions/">Future Features &amp; Contributions Guide</a></strong> to see how you can contribute your ideas, code, or feedback to make this Blueprint even better!</p>
@@ -832,10 +812,10 @@ and that the .csv file has the following format:</p>
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["content.code.copy", "content.tabs.link"], "search": "../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["content.code.copy", "content.tabs.link"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
       
     
   </body>
