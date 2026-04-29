@@ -1,7 +1,7 @@
 model_id: openai/whisper-tiny
-dataset_id: cmflnuzw43exbql8uukllvnqg
-language: None  # Set to None for multilingual training or if your language is not supported by Whisper
-repo_name: default
+dataset_id: cmn2cxzy701iumm077t5ayw0e
+language: Hindi  # Set to None for multilingual training or if your language is not supported by Whisper
+repo_name: whisper-tiny-hi-finetuned
 n_train_samples: -1
 n_test_samples: -1
 download_directory: ""  # Optional: where MDC datasets should be downloaded locally before processing
